@@ -1,8 +1,8 @@
 package ro.ganduraci.rappslib.network
 
+import android.util.Log
 import org.json.JSONException
 import org.json.JSONObject
-import ro.ganduraci.rappslib.data.Logcat
 
 object Request {
 
@@ -23,7 +23,7 @@ object Request {
             requestData.put(JKEY_METHOD, method)
             requestData.put(JKEY_PARAMS, params ?: JSONObject())
         } catch (ex: JSONException) {
-            Logcat.e("Request", "Failed to build request:${ex.message}")
+            Log.e("Request", "Failed to build request:${ex.message}")
         }
         return requestData
     }

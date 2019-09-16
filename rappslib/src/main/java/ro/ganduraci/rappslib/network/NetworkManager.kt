@@ -1,11 +1,11 @@
 package ro.ganduraci.rappslib.network
 
+import android.util.Log
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONObject
 import okhttp3.OkHttpClient
 import org.json.JSONException
-import ro.ganduraci.rappslib.data.Logcat
 import java.io.IOException
 
 
@@ -27,11 +27,11 @@ object NetworkManager {
     }
 
     fun makeRequest(endpoint: String, method: String, params: JSONObject?) : RequestResult{
-        if (baseURL.isEmpty()) Logcat.e(TAG, "WARNING!!! Base URL not set")
+        if (baseURL.isEmpty()) Log.e(TAG, "WARNING!!! Base URL not set")
         val requestUrl = baseURL + endpoint
         val reqData = Request.getRequestData(method, params)
         val reqId = Request.requestId
-        Logcat.i(
+        Log.i(
             TAG, "Making request with id=[$reqId]" +
             " on endpoint:$requestUrl with data:\n$reqData")
         val body = reqData.toString().toRequestBody(JSON)
@@ -43,20 +43,20 @@ object NetworkManager {
         try {
             val response = networkClient.newCall(request).execute()
             val stringResult = response.body?.string()?:""
-            Logcat.i(TAG, "Response for request with id=[$reqId]\n$stringResult")
+            Log.i(TAG, "Response for request with id=[$reqId]\n$stringResult")
             result = if (stringResult.isEmpty()) {
                 JSONObject()
             } else {
                 try {
                     JSONObject(stringResult)
                 } catch (ex: JSONException) {
-                    Logcat.e(TAG, "Could not parse response:${ex.message}")
+                    Log.e(TAG, "Could not parse response:${ex.message}")
                     JSONObject()
                 }
             }
         } catch (ex: IOException) {
             ex.printStackTrace()
-            Logcat.e(TAG, "Network IO exception:${ex.message}")
+            Log.e(TAG, "Network IO exception:${ex.message}")
             result = JSONObject()
         }
         return getRequestResult(result)
