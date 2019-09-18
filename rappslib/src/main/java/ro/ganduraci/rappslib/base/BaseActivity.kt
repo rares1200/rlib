@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.activity_base.*
 import ro.ganduraci.rappslib.R
@@ -17,6 +18,8 @@ open class BaseActivity : AppCompatActivity() {
 
     open fun openFragment(fragment: BaseFragment) {
         openFragment(fragment, Bundle())
+        setSupportActionBar(toolbar)
+        supportActionBar?.title = " "
     }
 
     open fun openFragment(fragment: BaseFragment, args: Bundle?) {
@@ -26,6 +29,14 @@ open class BaseActivity : AppCompatActivity() {
         ft.addToBackStack(fragment.javaClass.simpleName)
         ft.commit()
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+    }
+
+    open fun setToolbarTitle(title: String) {
+        supportActionBar?.title = title
+    }
+
+    open fun setToolbarColor(colorResId: Int) {
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, colorResId))
     }
 
     override fun onBackPressed() {
