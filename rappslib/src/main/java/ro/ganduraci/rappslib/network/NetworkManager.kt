@@ -6,6 +6,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONObject
 import okhttp3.OkHttpClient
 import org.json.JSONException
+import ro.ganduraci.rappslib.base.BaseApplication
 import java.io.IOException
 
 
@@ -22,11 +23,14 @@ object NetworkManager {
         baseURL = url
     }
 
-    fun makeRequest(endpoint: String, method: String) {
-        makeRequest(endpoint, method, null)
+    fun makeRequest(endpoint: String, method: String): RequestResult {
+        return makeRequest(endpoint, method, null)
     }
 
     fun makeRequest(endpoint: String, method: String, params: JSONObject?) : RequestResult{
+        if (BaseApplication.getInstance()?.hasInternetConnection() == false) {
+            return RequestResult(null, RequestError(RequestError.NETWORK_ERROR, "No internet connection", ""))
+        }
         if (baseURL.isEmpty()) Log.e(TAG, "WARNING!!! Base URL not set")
         val requestUrl = baseURL + endpoint
         val reqData = Request.getRequestData(method, params)

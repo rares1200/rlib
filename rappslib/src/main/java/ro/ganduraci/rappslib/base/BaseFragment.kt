@@ -2,6 +2,7 @@ package ro.ganduraci.rappslib.base
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import ro.ganduraci.rappslib.R
 
 open class BaseFragment : Fragment() {
 
@@ -52,5 +53,9 @@ open class BaseFragment : Fragment() {
     }
 
     open fun enableBackNavigation(): Boolean = true
+
+    fun showNoInternetConnectionError() {
+        BaseApplication.getInstance()?.showToastMessage(R.string.error_no_internet_connection)
+    }
 
 }
