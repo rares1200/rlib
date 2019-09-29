@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+            android:id="@+id/nav_beach"
+            android:icon="@drawable/ic_beach_access_white_24dp"
+            android:title="@string/nav_item_beach"/>
+
+    <item
+            android:id="@+id/nav_casino"
+            android:icon="@drawable/ic_casino_white_24dp"
+            android:title="@string/nav_item_casino"/>
+
+</menu>

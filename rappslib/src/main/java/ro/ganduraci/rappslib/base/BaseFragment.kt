@@ -50,4 +50,7 @@ open class BaseFragment : Fragment() {
     open fun backPressEvent(): Boolean {
         return false
     }
+
+    open fun enableBackNavigation(): Boolean = true
+
 }
