@@ -16,7 +16,7 @@ allprojects {
 Add library dependency in app level gradle file
 ```
 dependencies {
-  implementation 'com.github.rares1200:rlib:1.0.4'
+  implementation 'com.github.rares1200:rlib:1.0.5'
 }
 ```
 
