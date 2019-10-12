@@ -3,6 +3,7 @@ package ro.ganduraci.rlib
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import ro.ganduraci.rappslib.base.BaseActivity
 import ro.ganduraci.rappslib.base.BaseApplication
@@ -34,7 +35,16 @@ class MainActivity : BaseActivity() {
         NavigationDrawerManager.addItem(R.id.nav_casino, CasinoFragment())
         NavigationDrawerManager.addItem(R.id.nav_close, null, itemCallback = object : NavigationDrawerManager.MenuItemCallback {
             override fun onItemSelected() {
-                BaseApplication.getInstance()?.showToastMessage("Pressed close item")
+                val builder = AlertDialog.Builder(this@MainActivity)
+                builder.setMessage("Close pressed")
+                builder.setPositiveButton("OK") { dialog, _ ->
+                    dialog.dismiss()
+                    finish()
+                }
+                builder.setNegativeButton("CANCEL") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                builder.show()
             }
         })
     }
