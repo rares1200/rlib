@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_base.*
 import ro.ganduraci.rappslib.R
+import ro.ganduraci.rappslib.ui.NavigationDrawerManager
 
 open class BaseActivity : AppCompatActivity() {
 
@@ -26,7 +27,6 @@ open class BaseActivity : AppCompatActivity() {
             getTopFragment()?.let {
                 setUpNavigation(it)
             }
-
         }
 
     }
@@ -49,7 +49,13 @@ open class BaseActivity : AppCompatActivity() {
     fun setUpNavigation(fragment: BaseFragment) {
         Log.d(TAG, "Setting up navigation")
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        mActionBarDrawerToggle = object : ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.openDrawer, R.string.closeDrawer){}
+        mActionBarDrawerToggle = object : ActionBarDrawerToggle(
+            this,
+            drawer_layout,
+            toolbar,
+            R.string.openDrawer,
+            R.string.closeDrawer
+        ) {}
         if (fragment.enableBackNavigation()) {
             setNavigationHomeButton(true)
         } else {
@@ -71,6 +77,13 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         val topFragment = getTopFragment()
+        if (topFragment?.enableBackNavigation() != true) {
+            // Navigation drawer
+            if (supportFragmentManager.backStackEntryCount == 2) {
+                Log.d(TAG, "Setting current item home item")
+                NavigationDrawerManager.currentItemId = NavigationDrawerManager.homeItem
+            }
+        }
         if (topFragment != null && topFragment.backPressEvent()) {
             return
         }
@@ -85,7 +98,7 @@ open class BaseActivity : AppCompatActivity() {
         val stackCount = supportFragmentManager.backStackEntryCount
         Log.d("TestDebug", "Fragment count:$stackCount")
         if (stackCount > 0) {
-            val fragmentTag = supportFragmentManager.getBackStackEntryAt(stackCount - 1).name?:""
+            val fragmentTag = supportFragmentManager.getBackStackEntryAt(stackCount - 1).name ?: ""
             val fragment = supportFragmentManager.findFragmentByTag(fragmentTag)
             if (fragment is BaseFragment) {
                 return fragment
@@ -115,29 +128,56 @@ open class BaseActivity : AppCompatActivity() {
 
     fun getNavigationView(): NavigationView = nav_view
 
+
+
     fun setNavDrawerMenu(menuResId: Int) {
         nav_view.menu?.clear()
         nav_view.inflateMenu(menuResId)
+        nav_view.setNavigationItemSelectedListener {
+            val itemId = it.itemId
+            val selectedFragment = NavigationDrawerManager.getFragment(itemId)
+            if (selectedFragment != null) {
+                if (itemId == NavigationDrawerManager.homeItem) {
+                    if (NavigationDrawerManager.currentItemId != NavigationDrawerManager.homeItem) {
+                        supportFragmentManager.popBackStack()
+                    }
+                } else if (itemId != NavigationDrawerManager.currentItemId){
+                    if (NavigationDrawerManager.currentItemId != NavigationDrawerManager.homeItem) {
+                        supportFragmentManager.popBackStack()
+                    }
+                    openFragment(selectedFragment)
+                }
+            } else {
+                NavigationDrawerManager.getMenuItemCallback(itemId)?.onItemSelected()
+            }
+            NavigationDrawerManager.currentItemId = itemId
+            closeDrawer()
+            true
+        }
     }
 
     fun syncNavBarToggle() {
         mActionBarDrawerToggle?.syncState()
     }
 
-   private fun setNavigationHomeButton(showBack: Boolean) {
-       if (showBack) {
-           mActionBarDrawerToggle?.isDrawerIndicatorEnabled = false
-           drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-           mActionBarDrawerToggle?.setToolbarNavigationClickListener { onBackPressed() }
-           supportActionBar?.setDisplayHomeAsUpEnabled(true)
-           supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
-           mActionBarDrawerToggle?.syncState()
-       } else {
-           supportActionBar?.setDisplayHomeAsUpEnabled(false)
-           drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-           mActionBarDrawerToggle?.isDrawerIndicatorEnabled = true
-           mActionBarDrawerToggle?.toolbarNavigationClickListener = null
-           mActionBarDrawerToggle?.syncState()
-       }
-   }
+    private fun setNavigationHomeButton(showBack: Boolean) {
+        if (showBack) {
+            mActionBarDrawerToggle?.isDrawerIndicatorEnabled = false
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            mActionBarDrawerToggle?.setToolbarNavigationClickListener { onBackPressed() }
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
+            mActionBarDrawerToggle?.syncState()
+        } else {
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+            mActionBarDrawerToggle?.isDrawerIndicatorEnabled = true
+            mActionBarDrawerToggle?.toolbarNavigationClickListener = null
+            mActionBarDrawerToggle?.syncState()
+        }
+    }
+
+    fun closeDrawer() {
+        drawer_layout.closeDrawers()
+    }
 }

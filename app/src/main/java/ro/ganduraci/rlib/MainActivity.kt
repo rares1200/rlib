@@ -1,12 +1,12 @@
 package ro.ganduraci.rlib
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import ro.ganduraci.rappslib.base.BaseActivity
+import ro.ganduraci.rappslib.base.BaseApplication
 import ro.ganduraci.rappslib.ui.NavigationDrawerManager
-import ro.ganduraci.rappslib.utils.ImageUtils
 
 class MainActivity : BaseActivity() {
 
@@ -14,7 +14,7 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_base)
         setupDrawer()
-        openFragment(TestFragment())
+        openFragment(HomeFragment())
     }
 
     fun setupDrawer() {
@@ -29,6 +29,14 @@ class MainActivity : BaseActivity() {
             .textRow2("email@test.com", R.color.black)
             .build()
         getNavigationView().addHeaderView(headerView)
+        NavigationDrawerManager.addItem(R.id.nav_home, HomeFragment(), true)
+        NavigationDrawerManager.addItem(R.id.nav_beach, BeachFragment())
+        NavigationDrawerManager.addItem(R.id.nav_casino, CasinoFragment())
+        NavigationDrawerManager.addItem(R.id.nav_close, null, itemCallback = object : NavigationDrawerManager.MenuItemCallback {
+            override fun onItemSelected() {
+                BaseApplication.getInstance()?.showToastMessage("Pressed close item")
+            }
+        })
     }
 
 }

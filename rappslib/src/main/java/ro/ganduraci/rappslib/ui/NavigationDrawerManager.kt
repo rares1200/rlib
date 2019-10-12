@@ -7,9 +7,35 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import ro.ganduraci.rappslib.R
+import ro.ganduraci.rappslib.base.BaseFragment
 import ro.ganduraci.rappslib.utils.ImageUtils
 
 object NavigationDrawerManager {
+
+    const val INVALID_ITEM_ID = -1
+
+    private val items: MutableMap<Int, NavigationItem> = mutableMapOf()
+    var homeItem: Int = INVALID_ITEM_ID
+    var currentItemId: Int = INVALID_ITEM_ID
+
+    interface MenuItemCallback {
+        fun onItemSelected()
+    }
+
+    class NavigationItem(val fragment: BaseFragment?, val callback: MenuItemCallback?)
+
+    fun addItem(itemId: Int, fragment: BaseFragment?, setHome: Boolean = false, itemCallback: MenuItemCallback? = null) {
+        items[itemId] = NavigationItem(fragment, itemCallback)
+        if (setHome) {
+            homeItem = itemId
+            currentItemId = itemId
+        }
+
+    }
+
+    fun getFragment(itemId: Int): BaseFragment? = items[itemId]?.fragment
+
+    fun getMenuItemCallback(itemId: Int): MenuItemCallback? = items[itemId]?.callback
 
     class HeaderBuilder(inflater: LayoutInflater) {
 
