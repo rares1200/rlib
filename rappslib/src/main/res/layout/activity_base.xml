@@ -9,7 +9,7 @@
         tools:openDrawer="start"
         tools:context=".base.BaseActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -18,12 +18,37 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/appBarLayout"
                 app:layout_constraintTop_toTopOf="parent">
-            <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:id="@+id/collapsing_toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:theme="@style/ToolbarColoredBackArrow"/>
+                    android:layout_height="match_parent"
+                    android:fitsSystemWindows="true"
+                    app:expandedTitleMarginStart="48dp"
+                    app:expandedTitleMarginEnd="64dp"
+                    app:contentScrim="@color/colorPrimary"
+                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+                <ImageView
+                        android:id="@+id/expandedImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/bg_nav_header"
+                        android:contentDescription="@null"
+                        app:layout_collapseMode="parallax"
+                        app:layout_collapseParallaxMultiplier="0.7" />
+
+
+                <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbar"
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="?attr/colorPrimary"
+                        app:theme="@style/ToolbarColoredBackArrow"
+                        app:layout_collapseMode="parallax"/>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
 
         <FrameLayout
@@ -73,7 +98,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"

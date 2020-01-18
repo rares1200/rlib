@@ -23,12 +23,15 @@ open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_base)
+
+    }
+
+    fun setupNavigation() {
         supportFragmentManager.addOnBackStackChangedListener {
             getTopFragment()?.let {
                 setUpNavigation(it)
             }
         }
-
     }
 
     open fun openFragment(fragment: BaseFragment) {
@@ -180,4 +183,6 @@ open class BaseActivity : AppCompatActivity() {
     fun closeDrawer() {
         drawer_layout.closeDrawers()
     }
+
+    fun getDrawerLayout() = drawer_layout
 }
